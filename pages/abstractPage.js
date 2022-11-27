@@ -28,14 +28,6 @@ class AbstractPage {
     return this;
   }
 
-  async closeDeliveryLocationPopup() {
-    const deliveryLocationROTWButtonXpathSelector = '//span[text()=\'Rest of the World\']';
-    const deliveryLocationROTWButton = await this.findElementByXpath(deliveryLocationROTWButtonXpathSelector);
-    this.clickOnElement(deliveryLocationROTWButton);
-
-    return this;
-  }
-
   clickOnElement(element) {
     this.driver.executeScript("arguments[0].click();", element);
   }

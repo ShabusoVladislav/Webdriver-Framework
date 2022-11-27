@@ -28,7 +28,6 @@ describe("Add a Hat to the Bag test", () => {
     const hatPage = new HatPage(this.driver);
     await hatPage.openPage(hatPageUrl);
     await hatPage.closeCookiesPopup();
-    await hatPage.closeDeliveryLocationPopup();
 
     const hatPriceOnHatPage = await hatPage.getPrice();
     const hatTitleOnHatPage = await hatPage.getTitle();

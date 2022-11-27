@@ -28,7 +28,6 @@ describe("Search tests.", () => {
     const homePage = new HomePage(this.driver);
     await homePage.openPage(homePageUrl);
     await homePage.closeCookiesPopup();
-    await homePage.closeDeliveryLocationPopup();
 
     await homePage.openSearchLine();
 
@@ -47,7 +46,6 @@ describe("Search tests.", () => {
     const homePage = new HomePage(this.driver);
     await homePage.openPage(homePageUrl);
     await homePage.closeCookiesPopup();
-    await homePage.closeDeliveryLocationPopup();
 
     await homePage.openSearchLine();
 
