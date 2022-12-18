@@ -5,6 +5,7 @@ const AbstractPage = require('./abstractPage');
 class SearchResultsPage extends AbstractPage {
   async getNumberOfSearchedItemsFromTitle() {
     const titleCssSelector = 'h2.main-search__title';
+    await this.findElementByCss(titleCssSelector);
     let numberOfSearchedItemsFromTitle = await this.driver.findElement(By.css(titleCssSelector)).getText();
     numberOfSearchedItemsFromTitle = parseInt(numberOfSearchedItemsFromTitle.match(/\d+/));
 

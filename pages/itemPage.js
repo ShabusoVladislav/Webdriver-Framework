@@ -2,20 +2,31 @@ const webdriver = require('selenium-webdriver');
 const { By, until } = webdriver;
 const AbstractPage = require('./abstractPage');
 const BagPage = require('./bagPage');
+const mlog = require('mocha-logger');
 
-class HatPage extends AbstractPage {
+class ItemPage extends AbstractPage {
+  constructor(driver, item) {
+    super(driver);
+    this.item = item;
+  }
+
+  async openPage() {
+    mlog.log(`Open item page (url: ${this.item.getUrl()})`);
+    return super.openPage(this.item.getUrl());
+  }
+
   async getPrice() {
-    const hatPriceOnHatPageCssSelector = 'span.main-product__price';
-    const price = await this.findElementByCss(hatPriceOnHatPageCssSelector);
+    const itemPriceOnItemPageCssSelector = 'span.main-product__price';
+    const price = await this.findElementByCss(itemPriceOnItemPageCssSelector);
 
     return price.getText();
   }
 
   async getTitle() {
-    const hatTitleOnHatPageCssSelector = 'h1.main-product__title';
-    const hatTitle = await this.findElementByCss(hatTitleOnHatPageCssSelector);
+    const itemTitleOnHatPageCssSelector = 'h1.main-product__title';
+    const itemTitle = await this.findElementByCss(itemTitleOnHatPageCssSelector);
 
-    return hatTitle.getText();
+    return itemTitle.getText();
   }
 
   async getTextFromAddedToBagPopup() {
@@ -26,10 +37,11 @@ class HatPage extends AbstractPage {
     return textFromPopup.getText();
   }
 
-  async selectSize() {
-    const hatSizeXpathSelector = '//div[@class="size-selector__content"]/div[text()=\'1SZ\']';
-    const hatSize = await this.findElementByXpath(hatSizeXpathSelector);
-    this.clickOnElement(hatSize);
+  async selectSize(size) {
+    const itemSizeXpathSelector = `//div[@class="size-selector__content"]/div[text()='${size}']`;
+    const itemSize = await this.findElementByXpath(itemSizeXpathSelector);
+    this.clickOnElement(itemSize);
+    mlog.log(`Selecting ${size} size`);
 
     return this;
   }
@@ -38,6 +50,7 @@ class HatPage extends AbstractPage {
     const addToBagButtonCssSelector = 'button.product-form__add-to-cart';
     const addToBagButton = await this.findElementByCss(addToBagButtonCssSelector);
     this.clickOnElement(addToBagButton);
+    mlog.log('Adding item to bag');
 
     return this;
   }
@@ -47,6 +60,7 @@ class HatPage extends AbstractPage {
     await this._waitForAddedToBagPopupIsVisible();
     const viewBagButton = this.findElementByXpath(viewBagButtonXpathSelector);
     this.clickOnElement(viewBagButton);
+    mlog.log('Going to Bag page');
 
     return new BagPage(this.driver);
   }
@@ -58,4 +72,4 @@ class HatPage extends AbstractPage {
   }
 }
 
-module.exports = HatPage;
+module.exports = ItemPage;

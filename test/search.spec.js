@@ -1,37 +1,27 @@
-const webdriver = require("selenium-webdriver");
 const chai = require("chai");
 const assert = chai.assert;
-
-const capabilities = require('../capabilities.json');
+const argv = require('minimist')(process.argv.slice(2));
+const DriverSingleton = require('../driver/DriverSingleton');
 
 describe("Search tests.", () => {
   const HomePage = require('../pages/homePage');
 
-  const homePageUrl = 'https://row.lyleandscott.com/';
-  const serverUrl = 'http://bsuser_ZvQmut:TGaiaS6ezp6ikhQT3TWD@hub-cloud.browserstack.com/wd/hub';
+  const parsed = require("dotenv").config({path: `./resources/${argv.env}.search.properties`}).parsed;
 
   beforeEach(async function() {
-    this.driver = new webdriver.Builder()
-      .usingServer(serverUrl)
-      .withCapabilities({
-        ...capabilities,
-        ...capabilities['browser'] && { browserName: capabilities['browser']}
-      })
-      .build();
-
-    await this.driver.manage().window().maximize();
+    this.driver = await DriverSingleton.getDriver();
   });
 
   it('Should find 0 items for invalid search query.', async function () {
-    const invalidSearchQuery = 'Reporerd Bagg';
     //Home page
     const homePage = new HomePage(this.driver);
-    await homePage.openPage(homePageUrl);
+    await homePage.openPage();
     await homePage.closeCookiesPopup();
+    await homePage.closeDeliveryPopup();
 
     await homePage.openSearchLine();
 
-    const searchResultsPage = await homePage.inputSearchValue(invalidSearchQuery);
+    const searchResultsPage = await homePage.inputSearchValue(parsed.invalidSearchQuery);
 
     const numberOfSearchedElementsFromTitle = await searchResultsPage.getNumberOfSearchedItemsFromTitle();
     const numberOfSearchedElementsFromList = await searchResultsPage.getNumberOfSearchedItemsFromList();
@@ -41,19 +31,18 @@ describe("Search tests.", () => {
   }).timeout(60000);
 
   it('Should find items for valid search query.', async function () {
-    const validSearchQuery = 'Reporter Bag';
-
     const homePage = new HomePage(this.driver);
-    await homePage.openPage(homePageUrl);
+    await homePage.openPage();
     await homePage.closeCookiesPopup();
+    await homePage.closeDeliveryPopup();
 
     await homePage.openSearchLine();
 
-    const searchResultsPage = await homePage.inputSearchValue(validSearchQuery);
+    const searchResultsPage = await homePage.inputSearchValue(parsed.validSearchQuery);
 
     const numberOfSearchedElementsFromTitle = await searchResultsPage.getNumberOfSearchedItemsFromTitle();
     const numberOfSearchedElementsFromList = await searchResultsPage.getNumberOfSearchedItemsFromList();
-    const numberOfSearchedElementsContainsSearchQuery = await searchResultsPage.numberOfSearchedElementsContainsSearchQuery(validSearchQuery);
+    const numberOfSearchedElementsContainsSearchQuery = await searchResultsPage.numberOfSearchedElementsContainsSearchQuery(parsed.validSearchQuery);
 
     assert.equal(numberOfSearchedElementsFromTitle, numberOfSearchedElementsFromList);
     assert.isAbove(numberOfSearchedElementsFromTitle, 0);
@@ -61,6 +50,14 @@ describe("Search tests.", () => {
   }).timeout(60000);
 
   afterEach(async function () {
-    await this.driver.quit();
+    if(this.currentTest.state !== "passed") {
+      const image = await this.driver.takeScreenshot();
+      await require('fs').writeFile(
+        './screenshots/SearchFail.png',
+        image,
+        'base64',
+        (err) => {});
+    }
+    await DriverSingleton.closeDriver();
   });
 });
