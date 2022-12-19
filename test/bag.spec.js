@@ -2,13 +2,13 @@ const chai = require("chai");
 const expect = chai.expect;
 const argv = require('minimist')(process.argv.slice(2));
 
-describe("Bag tests", () => {
-  const ItemPage = require('../pages/ItemPage');
-  const BagPage = require('../pages/BagPage');
-  const DriverSingleton = require('../driver/DriverSingleton');
-  const SizeUtils = require('../utils/SizeUtils.json');
-  const Item = require('../models/Item');
+const DriverSingleton = require('../driver/DriverSingleton');
+const ItemPage = require('../pages/ItemPage');
+const BagPage = require('../pages/BagPage');
+const Item = require('../models/Item');
+const SizeUtils = require('../utils/SizeUtils.json');
 
+describe("Bag tests", () => {
   const parsed = require("dotenv").config({path: `./resources/${argv.env}.item.properties`}).parsed;
 
   before(async function() {

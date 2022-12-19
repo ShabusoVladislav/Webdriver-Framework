@@ -2,11 +2,11 @@ const chai = require("chai");
 const expect = chai.expect;
 const argv = require('minimist')(process.argv.slice(2));
 
-describe("Login test", () => {
-  const DriverSingleton = require("../driver/DriverSingleton");
-  const User = require("../models/User");
-  const LoginPage = require('../pages/LoginPage');
+const DriverSingleton = require("../driver/DriverSingleton");
+const LoginPage = require('../pages/LoginPage');
+const User = require("../models/User");
 
+describe("Login test", () => {
   const parsed = require("dotenv").config({path: `./resources/${argv.env}.login.properties`}).parsed;
 
   beforeEach(async function() {

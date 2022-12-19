@@ -1,20 +1,21 @@
 const chai = require("chai");
 const assert = chai.assert;
+const expect = chai.expect;
 const argv = require('minimist')(process.argv.slice(2));
 
-describe("Wishlist test.", () => {
-  const DriverSingleton = require('../driver/DriverSingleton');
-  const ItemPage = require('../pages/ItemPage');
-  const Item = require('../models/Item');
+const DriverSingleton = require('../driver/DriverSingleton');
+const ItemPage = require('../pages/ItemPage');
+const WishlistPage = require('../pages/WishlistPage');
+const Item = require('../models/Item');
 
+describe("Wishlist test.", () => {
   const parsed = require("dotenv").config({path: `./resources/${argv.env}.wishlist.properties`}).parsed;
 
-  beforeEach(async function() {
+  before(async function() {
     this.driver = await DriverSingleton.getDriver();
   });
 
   it('Should add item to Wishlist.', async function () {
-    //Home page
     const item = new Item(parsed.itemUrl, null, parsed.itemName);
 
     const itemPage = new ItemPage(this.driver, item);
@@ -32,6 +33,17 @@ describe("Wishlist test.", () => {
     assert.isAbove(numberOfCurrentItemsInWishlist, 0);
   }).timeout(60000);
 
+  it('Should remove item from Wishlist.', async function () {
+    const expectedTextFromEmptyWishlist = 'Your wishlist is empty, shop now to add something to your wishlist.';
+    const item = new Item(parsed.itemUrl, null, parsed.itemName);
+    const wishlistPage = new WishlistPage(this.driver, item);
+
+    await wishlistPage.removeItemFromWishlist();
+    const textFromEmptyWishlist = await wishlistPage.getTitleFromEmptyWishlist();
+
+    expect(textFromEmptyWishlist).to.equal(expectedTextFromEmptyWishlist);
+  }).timeout(60000);
+
   afterEach(async function () {
     if(this.currentTest.state !== "passed") {
       const image = await this.driver.takeScreenshot();
@@ -41,6 +53,9 @@ describe("Wishlist test.", () => {
         'base64',
         (err) => {});
     }
+  });
+
+  after(async function () {
     await DriverSingleton.closeDriver();
   });
 });

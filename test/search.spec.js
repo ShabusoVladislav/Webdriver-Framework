@@ -2,10 +2,10 @@ const chai = require("chai");
 const assert = chai.assert;
 const argv = require('minimist')(process.argv.slice(2));
 
-describe("Search tests.", () => {
-  const HomePage = require('../pages/HomePage');
-  const DriverSingleton = require('../driver/DriverSingleton');
+const DriverSingleton = require('../driver/DriverSingleton');
+const HomePage = require('../pages/HomePage');
 
+describe("Search tests.", () => {
   const parsed = require("dotenv").config({path: `./resources/${argv.env}.search.properties`}).parsed;
 
   beforeEach(async function() {
