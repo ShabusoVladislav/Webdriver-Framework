@@ -1,15 +1,17 @@
 class Item {
-  name;
-  price;
   url;
   size;
+  name;
+  price;
 
-  constructor(url, size) {
+  constructor(url, size= null, name = null, price = null) {
     this.url = url;
     this.size = size;
+    this.name = name;
+    this.price = price;
   }
 
-  getName () {
+  getName() {
     return this.name;
   }
 

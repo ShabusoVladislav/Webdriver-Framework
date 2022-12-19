@@ -2,15 +2,16 @@ const chai = require("chai");
 const expect = chai.expect;
 const argv = require('minimist')(process.argv.slice(2));
 
-describe("Add item to the Bag test", () => {
-  const ItemPage = require('../pages/itemPage');
+describe("Bag tests", () => {
+  const ItemPage = require('../pages/ItemPage');
+  const BagPage = require('../pages/BagPage');
   const DriverSingleton = require('../driver/DriverSingleton');
   const SizeUtils = require('../utils/SizeUtils.json');
   const Item = require('../models/Item');
 
   const parsed = require("dotenv").config({path: `./resources/${argv.env}.item.properties`}).parsed;
 
-  beforeEach(async function() {
+  before(async function() {
     this.driver = await DriverSingleton.getDriver();
   });
 
@@ -43,15 +44,29 @@ describe("Add item to the Bag test", () => {
     expect(textFromAddedToBagPopup).to.equal(itemAddedToBagText);
   }).timeout(60000);
 
+  it('Should remove item from the bag', async function () {
+    const textAfterRemoving = 'Your bag is currently empty!';
+
+    const bagPage = new BagPage(this.driver);
+    await bagPage.removeItem();
+
+    const textAfterRemovingFromTitle = await bagPage.getTextAfterRemoving();
+
+    expect(textAfterRemovingFromTitle).to.equal(textAfterRemoving);
+  }).timeout(60000);
+
   afterEach(async function () {
     if(this.currentTest.state !== "passed") {
       const image = await this.driver.takeScreenshot();
       await require('fs').writeFile(
-        './screenshots/AddToBagFail.png',
+        './screenshots/BagFail.png',
         image,
         'base64',
         (err) => {});
     }
+  });
+
+  after(async function () {
     await DriverSingleton.closeDriver();
   });
 });

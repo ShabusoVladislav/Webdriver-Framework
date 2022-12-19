@@ -3,6 +3,9 @@ const { By, until } = webdriver;
 const mlog = require('mocha-logger');
 
 class AbstractPage {
+  static acceptCookiesButtonCssSelector = 'button#onetrust-accept-btn-handler';
+  static acceptROTWDeliveryButtonXpathSelector = '//span[text()=\'Rest of the World\']';
+
   constructor(driver) {
     this.driver = driver;
   }
@@ -23,8 +26,7 @@ class AbstractPage {
 
   async closeCookiesPopup() {
     mlog.log('Closing cookies popup');
-    const acceptCookiesButtonCssSelector = 'button#onetrust-accept-btn-handler';
-    const acceptCookiesButton = await this.findElementByCss(acceptCookiesButtonCssSelector);
+    const acceptCookiesButton = await this.findElementByCss(AbstractPage.acceptCookiesButtonCssSelector);
     this.clickOnElement(acceptCookiesButton);
 
     return this;
@@ -32,8 +34,7 @@ class AbstractPage {
 
   async closeDeliveryPopup() {
     mlog.log('Closing delivery popup');
-    const acceptROTWDeliveryButtonXpathSelector = '//span[text()=\'Rest of the World\']';
-    const acceptROTWDeliveryButton = await this.findElementByXpath(acceptROTWDeliveryButtonXpathSelector);
+    const acceptROTWDeliveryButton = await this.findElementByXpath(AbstractPage.acceptROTWDeliveryButtonXpathSelector);
     this.clickOnElement(acceptROTWDeliveryButton);
 
     return this;

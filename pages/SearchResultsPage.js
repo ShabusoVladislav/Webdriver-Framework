@@ -1,20 +1,21 @@
 const webdriver = require('selenium-webdriver');
-const { By, until, Key } = webdriver;
-const AbstractPage = require('./abstractPage');
+const { By, until } = webdriver;
+const AbstractPage = require('./AbstractPage');
 
 class SearchResultsPage extends AbstractPage {
+  static titleCssSelector = 'h2.main-search__title';
+  static listOfSearchedItemsCssSelector = 'div.main-search__grid > a';
+
   async getNumberOfSearchedItemsFromTitle() {
-    const titleCssSelector = 'h2.main-search__title';
-    await this.findElementByCss(titleCssSelector);
-    let numberOfSearchedItemsFromTitle = await this.driver.findElement(By.css(titleCssSelector)).getText();
+    await this.findElementByCss(SearchResultsPage.titleCssSelector);
+    let numberOfSearchedItemsFromTitle = await this.driver.findElement(By.css(SearchResultsPage.titleCssSelector)).getText();
     numberOfSearchedItemsFromTitle = parseInt(numberOfSearchedItemsFromTitle.match(/\d+/));
 
     return numberOfSearchedItemsFromTitle;
   }
 
   async getNumberOfSearchedItemsFromList() {
-    const listOfSearchedItemsCssSelector = 'div.main-search__grid > a';
-    const searchedItems = await this.driver.findElements(By.css(listOfSearchedItemsCssSelector));
+    const searchedItems = await this.driver.findElements(By.css(SearchResultsPage.listOfSearchedItemsCssSelector));
 
     return searchedItems.length;
   }

@@ -1,10 +1,10 @@
 const chai = require("chai");
 const assert = chai.assert;
 const argv = require('minimist')(process.argv.slice(2));
-const DriverSingleton = require('../driver/DriverSingleton');
 
 describe("Search tests.", () => {
-  const HomePage = require('../pages/homePage');
+  const HomePage = require('../pages/HomePage');
+  const DriverSingleton = require('../driver/DriverSingleton');
 
   const parsed = require("dotenv").config({path: `./resources/${argv.env}.search.properties`}).parsed;
 
@@ -17,7 +17,6 @@ describe("Search tests.", () => {
     const homePage = new HomePage(this.driver);
     await homePage.openPage();
     await homePage.closeCookiesPopup();
-    await homePage.closeDeliveryPopup();
 
     await homePage.openSearchLine();
 
@@ -34,7 +33,6 @@ describe("Search tests.", () => {
     const homePage = new HomePage(this.driver);
     await homePage.openPage();
     await homePage.closeCookiesPopup();
-    await homePage.closeDeliveryPopup();
 
     await homePage.openSearchLine();
 
